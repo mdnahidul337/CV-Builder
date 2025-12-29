@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional CV Builder with PDF Export</title>
+    <title>Professional CV Builder with Complete PDF Export</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -19,6 +19,7 @@
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            overflow-x: hidden;
         }
         
         .container {
@@ -151,6 +152,8 @@
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             transition: all 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .preview-section {
@@ -161,6 +164,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             overflow: auto;
+            max-height: 90vh;
         }
         
         .section-title {
@@ -348,6 +352,19 @@
             border: 1px solid #eee;
             border-radius: 8px;
             background-color: white;
+            width: 100%;
+        }
+        
+        /* PDF optimized CV preview */
+        .cv-preview-pdf {
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            padding: 20mm;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            font-size: 11pt;
+            line-height: 1.5;
         }
         
         /* Template 1 - Modern */
@@ -402,18 +419,20 @@
         }
         
         .template-modern .cv-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            page-break-inside: avoid;
         }
         
         .template-modern .cv-section h3 {
             color: #2c3e50;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             padding-bottom: 8px;
             border-bottom: 2px solid #f1f1f1;
             font-size: 1.4rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            page-break-after: avoid;
         }
         
         .template-modern .cv-section h3 i {
@@ -440,15 +459,15 @@
         .template-modern .cv-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         
         .template-modern .cv-tag {
             background-color: #e1f0fa;
             color: #2c3e50;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
         }
         
         /* Template 2 - Classic */
@@ -485,7 +504,8 @@
         }
         
         .template-classic .cv-section {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
         }
         
         .template-classic .cv-section h3 {
@@ -496,6 +516,7 @@
             font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            page-break-after: avoid;
         }
         
         .template-classic .cv-content {
@@ -505,15 +526,15 @@
         .template-classic .cv-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         
         .template-classic .cv-tag {
             background-color: #f1f1f1;
             color: #2c3e50;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 3px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-left: 3px solid #2c3e50;
         }
         
@@ -576,36 +597,38 @@
         }
         
         .template-creative .cv-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             background-color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            page-break-inside: avoid;
         }
         
         .template-creative .cv-section h3 {
             color: #3498db;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 2px solid #f1f1f1;
             font-size: 1.5rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            page-break-after: avoid;
         }
         
         .template-creative .cv-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         
         .template-creative .cv-tag {
             background-color: #e1f0fa;
             color: #2c3e50;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
         }
         
         .no-photo {
@@ -631,6 +654,68 @@
         
         .edit-mode .preview-section {
             opacity: 0.8;
+        }
+        
+        /* PDF Modal */
+        .pdf-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .pdf-modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .pdf-modal-header {
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .pdf-modal-body {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .pdf-preview-container {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            padding: 20mm;
+            transform: scale(0.8);
+            transform-origin: top center;
+        }
+        
+        .close-pdf-modal {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
         }
         
         @media (max-width: 1100px) {
@@ -673,7 +758,7 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-file-alt"></i> Professional CV Builder</h1>
-            <p>Create a professional resume with multiple templates, edit mode, and PDF export functionality</p>
+            <p>Create a professional resume with multiple templates, edit mode, and complete PDF export</p>
         </header>
         
         <div class="controls">
@@ -698,7 +783,7 @@
                     <i class="fas fa-save"></i> Save Data
                 </button>
                 <button class="action-btn pdf-btn" id="downloadPdfBtn">
-                    <i class="fas fa-file-pdf"></i> Download PDF
+                    <i class="fas fa-file-pdf"></i> Generate PDF
                 </button>
             </div>
         </div>
@@ -813,7 +898,7 @@
                     </div>
                     
                     <div class="form-buttons">
-                        <button type="submit" class="submit-btn"><i class="fas fa-file-download"></i> Generate CV</button>
+                        <button type="submit" class="submit-btn"><i class="fas fa-file-download"></i> Update CV</button>
                         <button type="button" class="reset-btn" id="resetBtn"><i class="fas fa-redo"></i> Reset Form</button>
                     </div>
                 </form>
@@ -828,8 +913,23 @@
             </section>
         </div>
         
+        <!-- PDF Modal -->
+        <div class="pdf-modal" id="pdfModal">
+            <div class="pdf-modal-content">
+                <div class="pdf-modal-header">
+                    <h3>PDF Preview - Check before downloading</h3>
+                    <button class="close-pdf-modal" id="closePdfModal">Close</button>
+                </div>
+                <div class="pdf-modal-body">
+                    <div class="pdf-preview-container" id="pdfPreviewContainer">
+                        <!-- PDF preview will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <footer>
-            <p>Professional CV Builder &copy; 2023 | Features: Multiple Templates, Edit Mode, PDF Export, Local Storage</p>
+            <p>Professional CV Builder &copy; 2023 | Fixed PDF Export with Complete Content Display</p>
         </footer>
     </div>
 
@@ -847,6 +947,9 @@
         const saveDataBtn = document.getElementById('saveDataBtn');
         const downloadPdfBtn = document.getElementById('downloadPdfBtn');
         const templateBtns = document.querySelectorAll('.template-btn');
+        const pdfModal = document.getElementById('pdfModal');
+        const closePdfModal = document.getElementById('closePdfModal');
+        const pdfPreviewContainer = document.getElementById('pdfPreviewContainer');
         
         // Skill and Hobby Management
         const skillsContainer = document.getElementById('skillsContainer');
@@ -920,7 +1023,7 @@
                     
                     // Load form fields
                     Object.keys(data).forEach(key => {
-                        if (key !== 'skills' && key !== 'hobbies' && key !== 'photo') {
+                        if (key !== 'skills' && key !== 'hobbies' && key !== 'photo' && key !== 'template') {
                             const element = document.getElementById(key);
                             if (element) {
                                 element.value = data[key];
@@ -942,6 +1045,18 @@
                         photoPreview.src = data.photo;
                         photoPreview.style.display = 'block';
                         document.querySelector('.photo-preview .no-photo').style.display = 'none';
+                    }
+                    
+                    // Load template if available
+                    if (data.template) {
+                        currentTemplate = data.template;
+                        templateBtns.forEach(btn => {
+                            if (btn.getAttribute('data-template') === currentTemplate) {
+                                btn.classList.add('active');
+                            } else {
+                                btn.classList.remove('active');
+                            }
+                        });
                     }
                     
                     console.log('Data loaded from local storage');
@@ -1065,7 +1180,19 @@
             
             // Download PDF Button
             downloadPdfBtn.addEventListener('click', function() {
-                downloadPDF();
+                showPDFPreview();
+            });
+            
+            // Close PDF Modal
+            closePdfModal.addEventListener('click', function() {
+                pdfModal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            pdfModal.addEventListener('click', function(e) {
+                if (e.target === pdfModal) {
+                    pdfModal.style.display = 'none';
+                }
             });
             
             // Real-time form updates to preview
@@ -1437,41 +1564,230 @@
             localStorage.setItem('cvData', JSON.stringify(formData));
         }
         
-        async function downloadPDF() {
-            // Show loading message
-            showNotification('Generating PDF...', 'info');
+        function showPDFPreview() {
+            showNotification('Generating PDF preview...', 'info');
             
+            // Get current CV data
+            const formData = {
+                fullName: document.getElementById('fullName').value || 'Your Full Name',
+                jobTitle: document.getElementById('jobTitle').value || 'Professional',
+                mobileNumber: document.getElementById('mobileNumber').value || 'Not specified',
+                email: document.getElementById('email').value || 'Not specified',
+                homeAddress: document.getElementById('homeAddress').value || 'Not specified',
+                jobObjective: document.getElementById('jobObjective').value || 'Your job objective will appear here.',
+                workExperience: document.getElementById('workExperience').value || 'Your work experience will appear here. If you\'re a fresher, you can leave this section blank.',
+                education: document.getElementById('education').value || 'Your educational qualifications will appear here.',
+                technicalQualification: document.getElementById('technicalQualification').value || 'Your technical qualifications will appear here.',
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                fatherName: document.getElementById('fatherName').value || 'Not specified',
+                maritalStatus: document.getElementById('maritalStatus').value || 'Not specified',
+                languages: document.getElementById('languages').value || 'Not specified',
+                photo: photoPreview.src || ''
+            };
+            
+            // Generate PDF-optimized HTML
+            const pdfHTML = generatePDFOptimizedHTML(currentTemplate, formData);
+            
+            // Insert into PDF preview container
+            pdfPreviewContainer.innerHTML = pdfHTML;
+            
+            // Show modal
+            pdfModal.style.display = 'flex';
+            
+            // After a short delay, generate the actual PDF
+            setTimeout(generatePDF, 500);
+        }
+        
+        function generatePDFOptimizedHTML(template, data) {
+            // Format date of birth
+            const dobFormatted = data.dateOfBirth ? formatDate(data.dateOfBirth) : 'Not specified';
+            
+            // Get photo HTML
+            const photoHTML = data.photo ? 
+                `<img src="${data.photo}" alt="${data.fullName}" style="max-width:100%; max-height:100%;">` :
+                '<span class="no-photo">No photo uploaded</span>';
+            
+            // Format work experience and education with line breaks
+            const workExpHTML = data.workExperience.replace(/\n/g, '<br>');
+            const educationHTML = data.education.replace(/\n/g, '<br>');
+            const technicalHTML = data.technicalQualification.replace(/\n/g, '<br>');
+            
+            // Generate skills and hobbies tags
+            const skillsHTML = cvData.skills.map(skill => `<span class="cv-tag">${skill}</span>`).join('');
+            const hobbiesHTML = cvData.hobbies.map(hobby => `<span class="cv-tag">${hobby}</span>`).join('');
+            
+            // Create PDF-optimized HTML with A4 dimensions
+            let html = `
+                <div class="cv-preview-pdf template-${template}">
+            `;
+            
+            if (template === 'modern') {
+                html += `
+                    <div class="cv-header">
+                        <div class="cv-photo">
+                            ${photoHTML}
+                        </div>
+                        <div class="cv-personal-info">
+                            <h2 style="font-size: 24pt; margin-bottom: 5px;">${data.fullName}</h2>
+                            <div class="cv-title" style="font-size: 14pt; color: #3498db; margin-bottom: 15px; font-weight: 600;">${data.jobTitle}</div>
+                            <div class="cv-contact" style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; font-size: 10pt;">
+                                <div class="cv-contact-item">
+                                    <strong>Phone:</strong> ${data.mobileNumber}
+                                </div>
+                                <div class="cv-contact-item">
+                                    <strong>Email:</strong> ${data.email}
+                                </div>
+                                <div class="cv-contact-item">
+                                    <strong>Address:</strong> ${data.homeAddress}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cv-section" style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Job Objective</h3>
+                        <p style="font-style: italic; color: #555; background-color: #f9f9f9; padding: 10px; border-left: 4px solid #3498db;">${data.jobObjective}</p>
+                    </div>
+                    
+                    <div class="cv-section" style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Work Experience</h3>
+                        <p>${workExpHTML}</p>
+                    </div>
+                    
+                    <div class="cv-section" style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Education</h3>
+                        <p>${educationHTML}</p>
+                    </div>
+                    
+                    <div class="cv-section" style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Technical Qualification</h3>
+                        <p>${technicalHTML}</p>
+                    </div>
+                    
+                    <div class="cv-section" style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Personal Details</h3>
+                        <p><strong>Date of Birth:</strong> ${dobFormatted}</p>
+                        <p><strong>Father's Name:</strong> ${data.fatherName}</p>
+                        <p><strong>Marital Status:</strong> ${data.maritalStatus}</p>
+                        <p><strong>Languages Known:</strong> ${data.languages}</p>
+                    </div>
+                    
+                    <div class="cv-section" style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Skills</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">${skillsHTML}</div>
+                    </div>
+                    
+                    <div class="cv-section">
+                        <h3 style="font-size: 16pt; color: #2c3e50; margin-bottom: 10px; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px;">Hobbies</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">${hobbiesHTML}</div>
+                    </div>
+                `;
+            } else {
+                // Simplified version for other templates in PDF
+                html += `
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="font-size: 24pt; color: #2c3e50; margin-bottom: 10px;">${data.fullName}</h1>
+                        <h2 style="font-size: 14pt; color: #3498db; margin-bottom: 20px;">${data.jobTitle}</h2>
+                        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; font-size: 10pt;">
+                            <div><strong>Phone:</strong> ${data.mobileNumber}</div>
+                            <div><strong>Email:</strong> ${data.email}</div>
+                            <div><strong>Address:</strong> ${data.homeAddress}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Career Objective</h3>
+                        <p>${data.jobObjective}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Work Experience</h3>
+                        <p>${workExpHTML}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Education</h3>
+                        <p>${educationHTML}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Technical Qualification</h3>
+                        <p>${technicalHTML}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Personal Details</h3>
+                        <p><strong>Date of Birth:</strong> ${dobFormatted}</p>
+                        <p><strong>Father's Name:</strong> ${data.fatherName}</p>
+                        <p><strong>Marital Status:</strong> ${data.maritalStatus}</p>
+                        <p><strong>Languages Known:</strong> ${data.languages}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Skills</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">${skillsHTML}</div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="font-size: 16pt; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px;">Hobbies</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">${hobbiesHTML}</div>
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            return html;
+        }
+        
+        async function generatePDF() {
             try {
-                // Use html2canvas to capture the CV preview
-                const canvas = await html2canvas(cvPreview, {
+                showNotification('Creating PDF document...', 'info');
+                
+                // Create PDF document
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                
+                // Add content to PDF
+                const content = pdfPreviewContainer;
+                
+                // Use html2canvas to capture the content
+                const canvas = await html2canvas(content, {
                     scale: 2,
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    width: content.offsetWidth,
+                    height: content.offsetHeight,
+                    windowWidth: content.scrollWidth,
+                    windowHeight: content.scrollHeight
                 });
                 
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF('p', 'mm', 'a4');
                 
-                // Calculate dimensions
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
+                // Calculate image dimensions to fit page
                 const imgWidth = pageWidth - 20; // 10mm margin on each side
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
                 // Add image to PDF
                 pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
                 
-                // Add footer with timestamp
-                const timestamp = new Date().toLocaleString();
+                // Add footer
                 pdf.setFontSize(10);
                 pdf.setTextColor(150);
-                pdf.text(`Generated on ${timestamp} - Professional CV Builder`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                pdf.text('Generated with Professional CV Builder', pageWidth / 2, pageHeight - 10, { align: 'center' });
                 
                 // Save the PDF
-                pdf.save(`${document.getElementById('fullName').value || 'CV'}_${currentTemplate}.pdf`);
+                const fileName = `${document.getElementById('fullName').value || 'My_CV'}.pdf`;
+                pdf.save(fileName);
                 
                 showNotification('PDF downloaded successfully!', 'success');
+                
+                // Close modal after download
+                setTimeout(() => {
+                    pdfModal.style.display = 'none';
+                }, 2000);
+                
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 showNotification('Error generating PDF. Please try again.', 'error');
